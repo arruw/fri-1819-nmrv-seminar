@@ -1,3 +1,6 @@
 [submodule "toolkit"]
 	path = toolkit
 	url = https://github.com/alanlukezic/tracking-toolkit-lite.git
+[submodule "pdollar-toolbox"]
+	path = pdollar-toolbox
+	url = git@github.com:pdollar/toolbox.git
