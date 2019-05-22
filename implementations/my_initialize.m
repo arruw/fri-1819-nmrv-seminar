@@ -10,25 +10,41 @@ function [state, location] = my_initialize(I, region, params)
     
     %% translation
     % get cosine window
-    Cw = create_cos_window([bbox_t(3) bbox_t(4)]);
+    Cw_t = create_cos_window(bbox_t(3:4));
     
     % get ground truth
-    Gc = conj(fft2(create_gauss_peak([bbox_t(3) bbox_t(4)], params.peak, params.sigma)));
+    Gc_t = conj(fft2(create_gauss_peak(bbox_t(3:4), params.peak, params.sigma)));
     
-    [f, d] = extract_translation_features(I, bbox_t, Cw, params);
-    A = zeros([size(Cw) d]);
-    B = zeros(size(Cw));
-    [~, A, B] = correlate(f, Gc, A, B, params.lambda);
+    [f_t, d_t] = extract_translation_features(I, bbox_t, Cw_t, params);
+    A_t = zeros([size(Cw_t) d_t]);
+    B_t = zeros(size(Cw_t));
+    [~, A_t, B_t] = correlate(f_t, Gc_t, A_t, B_t, params.lambda);
+    
+%     %% scale
+%     % get cosine window
+%     Cw_s = create_cos_window(bbox_s(3:4));
+%     
+%     % get ground truth
+%     Gc_s = conj(fft2(create_gauss_peak(bbox_s(3:4), params.peak, params.sigma)));
+%     
+%     [f_s, d_s] = extract_scale_features(I, bbox_t, Cw_s, params);
+%     A_s = zeros([size(Cw_s) d_s]);
+%     B_s = zeros(size(Cw_s));
+%     [~, A_s, B_s] = correlate(f_s, Gc_s, A_s, B_s, params.lambda);
     
     %% construct state
     state = struct;  
     % translation
-    state.A = A;
-    state.B = B;
-    state.Gc = Gc;
-    state.Cw = Cw;
+    state.A_t = A_t;
+    state.B_t = B_t;
+    state.Gc_t = Gc_t;
+    state.Cw_t = Cw_t;
     % scale
-    % TODO
+%     state.A_s = A_s;
+%     state.B_s = B_s;
+%     state.Gc_s = Gc_s;
+%     state.Cw_s = Cw_s;
+%     state.scale = 1.0;
     % other
     state.bbox_s = bbox_s;
     state.bbox_t = bbox_t;
