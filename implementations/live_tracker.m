@@ -38,9 +38,9 @@ while true
         flag_init = false;
         bbox = getrect;
         tic;
-        tracker = mosse_initialize(I, bbox, params); 
+        tracker = my_initialize(I, bbox, params); 
     else
-       [tracker, bbox] = mosse_update(tracker, I, params); 
+       [tracker, bbox] = my_update(tracker, I, params); 
     end
     
     subplot(7, 1, 1:6); 

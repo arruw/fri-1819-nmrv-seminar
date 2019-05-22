@@ -1,19 +1,20 @@
 function demo_tracker()
 
 % TODO: put name oy four tracker here
-tracker_name = 'mosse';
+tracker_name = 'my';
 % TODO: select a sequence you want to test on
-sequence = 'sunshade';
+sequence = 'fish1';
 % TODO: give path to the dataset folder
-dataset_path = './resources/vot2014';
+dataset_path = './resources/vot/vot2014';
 
 params = struct;
 params.sigma = 2;
 params.peak = 100;
-params.s2tr = 2;
-params.alpha = 0.125;
 params.psr = 0.05;
-params.lambda = 1e-5;
+params.alpha = 0.025;   % learning rate
+params.lambda = 0.01;   % regularization
+params.S = 33;          % # of scales
+params.a = 1.02;        % scale factor
 
 use_reinitialization = true;
 skip_after_fail = 5;
@@ -64,7 +65,7 @@ while frame <= numel(img_dir)
     % show image
 %     subplot(4, 4, 1:12);
 %     cla;
-    imshow(img);
+    imagesc(rgb2gray(img)); colormap(gray); set(gca,'dataAspectRatio',[1 1 1]);
     hold on;
     color = 'y';
     if tracker.m(end) < params.peak*params.psr
