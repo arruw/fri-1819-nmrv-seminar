@@ -1,0 +1,6 @@
+[submodule "modules/pdollar/toolbox"]
+	path = modules/pdollar/toolbox
+	url = git@github.com:pdollar/toolbox.git
+[submodule "modules/alanlukezic/tracking-toolkit-lite"]
+	path = modules/alanlukezic/tracking-toolkit-lite
+	url = git@github.com:alanlukezic/tracking-toolkit-lite.git
