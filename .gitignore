@@ -352,4 +352,3 @@ workspace/*
 !workspace/tests.m
 !workspace/time_analysis.m
 resources/*
-toolkit/*
