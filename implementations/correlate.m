@@ -10,8 +10,13 @@ function [y, A, B] = correlate(f, Gc, A, B, lambda)
 % A  - new numerator (d-dimensional, no learning rate applied)
 % B  - new denumerator (no learning rate applied)
 
-    d = size(f);
-    d = d(end);
+    d = length(size(f));
+    if(d == 3)
+        d = size(f);
+        d = d(end);
+    else
+        d = 1;
+    end
     
     AcF = zeros([size(Gc) d]);
     GcF = zeros([size(Gc) d]);
@@ -25,7 +30,7 @@ function [y, A, B] = correlate(f, Gc, A, B, lambda)
         FcF(:,:,l) = Fc .* F;
     end
     
-    y = ifft2(sum(AcF, d) ./ (B + lambda));  % eq. 6
+    y = ifft2(sum(AcF, 3) ./ (B + lambda));  % eq. 6
     A = GcF;                                 % part of eq. 5a
-    B = sum(FcF, d);                         % part of eq. 5b
+    B = sum(FcF, 3);                         % part of eq. 5b
 end

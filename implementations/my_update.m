@@ -1,7 +1,5 @@
 function [state, location] = my_update(state, I, params)
     
-    I = double(I);
-
     x_c = state.bbox_t(1)+state.bbox_t(3)/2;
     y_c = state.bbox_t(2)+state.bbox_t(4)/2;
     
@@ -17,7 +15,7 @@ function [state, location] = my_update(state, I, params)
     % get displacement vector
     dx = x_n - x_c;
     dy = y_n - y_c;
-    
+        
     % update state
     state.A_t = (1-params.alpha)*state.A_t + params.alpha*A_t;
     state.B_t = (1-params.alpha)*state.B_t + params.alpha*B_t;

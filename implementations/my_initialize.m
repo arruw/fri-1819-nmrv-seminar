@@ -1,7 +1,5 @@
 function [state, location] = my_initialize(I, region, params)
 
-    I = double(I);
-
     % get search bounding box
     bbox_s = get_bbox(region);
     
