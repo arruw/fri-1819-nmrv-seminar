@@ -3,25 +3,25 @@ function [f, d] = extract_translation_features(I, bbox, Cw, params)
     y_c = bbox(2)+bbox(4)/2;
     
     %% GRAY
-    I = double(I);
-    d = 1;
-    f(:,:,1) = get_patch(I(:,:,1)/255, [x_c y_c], 1, bbox(3:4)) .* Cw;
+%     I = double(I);
+%     d = 1;
+%     f(:,:,1) = imresize(get_patch(I(:,:,1)/255, [x_c y_c], 1, bbox(3:4)), size(Cw)) .* Cw;
     
     %% RGB
 %     I = double(I);
 %     d = 3;
 %     f = zeros([size(Cw) d]);
-%     f(:,:,1) = get_patch(I(:,:,1)/255, [x_c y_c], 1, bbox(3:4)) .* Cw;
-%     f(:,:,2) = get_patch(I(:,:,2)/255, [x_c y_c], 1, bbox(3:4)) .* Cw;
-%     f(:,:,3) = get_patch(I(:,:,3)/255, [x_c y_c], 1, bbox(3:4)) .* Cw;
+%     f(:,:,1) = imresize(get_patch(I(:,:,1)/255, [x_c y_c], 1, bbox(3:4)), size(Cw)) .* Cw;
+%     f(:,:,2) = imresize(get_patch(I(:,:,2)/255, [x_c y_c], 1, bbox(3:4)), size(Cw)) .* Cw;
+%     f(:,:,3) = imresize(get_patch(I(:,:,3)/255, [x_c y_c], 1, bbox(3:4)), size(Cw)) .* Cw;
     
     %% HSV
     Ihsv = double(rgb2hsv(I));
     d = 3;
     f = zeros([size(Cw) d]);
-    f(:,:,1) = get_patch(Ihsv(:,:,1)/1, [x_c y_c], 1, bbox(3:4)) .* Cw;
-    f(:,:,2) = get_patch(Ihsv(:,:,2)/1, [x_c y_c], 1, bbox(3:4)) .* Cw;
-    f(:,:,3) = get_patch(Ihsv(:,:,3)/1, [x_c y_c], 1, bbox(3:4)) .* Cw;
+    f(:,:,1) = imresize(get_patch(Ihsv(:,:,1)/1, [x_c y_c], 1, bbox(3:4)), size(Cw)) .* Cw;
+    f(:,:,2) = imresize(get_patch(Ihsv(:,:,2)/1, [x_c y_c], 1, bbox(3:4)), size(Cw)) .* Cw;
+    f(:,:,3) = imresize(get_patch(Ihsv(:,:,3)/1, [x_c y_c], 1, bbox(3:4)), size(Cw)) .* Cw;
     
     %% PCA HOG
 %     patch = double(get_patch(rgb2gray(I), [x_c y_c], 1, bbox(3:4))) .* Cw;

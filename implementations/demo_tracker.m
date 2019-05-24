@@ -3,7 +3,7 @@ function demo_tracker()
 % TODO: put name oy four tracker here
 tracker_name = 'my';
 % TODO: select a sequence you want to test on
-sequence = 'car';
+sequence = 'sunshade';
 % TODO: give path to the dataset folder
 dataset_path = './resources/vot/vot2014';
 
@@ -11,10 +11,11 @@ params = struct;
 params.sigma = 2;
 params.peak = 100;
 params.psr = 0.05;
-params.alpha = 0.025;   % learning rate
-params.lambda = 0.01;   % regularization
-params.S = 33;          % # of scales
-params.a = 1.02;        % scale factor
+params.alpha = 0.025;     % learning rate
+params.lambda = 0.01;     % regularization
+params.S = 33;            % # of scales
+params.a = 1.02;          % scale factor
+params.scale = false;     % estimate scale [true|false]
 
 use_reinitialization = true;
 skip_after_fail = 5;
