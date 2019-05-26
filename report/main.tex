@@ -13,13 +13,41 @@
 % 
 \title{Seminar: Correlation Filter Tracking - Upgrades}
 \author{Matjaž Mav}
-\institute{Advanced Computer Vision Methods}
+\institute{University of Ljubljana, Faculty of Computer and Information Science\newline\email{mm3058@student.uni-lj.si}}
 %
 \maketitle
 %
  
+\begin{abstract}
+TODO
+\end{abstract}
+\keywords{TODO, TO, DO}
+
 \section{Introduction}
+In this seminar we choose to work on upgrading previously implemented tracker based on correlation filter (CF) called MOSSE. We choose this topic because we found it interesting that simple approach like correlation filter can achieve beyond real-time performance with relatively good accuracy and robustness. In this paper we will explore effect of a different visual models and approaches for the target scale estimation.
+
+This paper is structured in to three sections. In the section \ref{sec:related_work} we will analyse work previously done in this area. In the section \ref{sec:methods} we will explain our approach and methods that we used. And in the section \ref{sec:experimental_evaluation} we will present results of our implementation.
+
+\section{Related work}
+\label{sec:related_work}
+Tracking with CF is interesting topic, because of its high computational efficiency, robustness and accuracy. Thereby this trackers are suitable for variety of applications. In 2010 Bolme et al. \cite{bolme2010visual} introduced fast CF tracker called MOSSE filter (Minimum Output Sum of Squared Error) that can achieve few hundreds frames per second (in their evaluation around ~650 FPS).  In 2014 Danelljan et al. \cite{danelljan2014accurate} proposed method that uses separate filters for translation and scale estimation. Their approach is generic and can be integrated in any existing object tracker. Additionally they presented CF that can operate on multidimensional features. Our paper is essentially based on this two papers.
+
+
+\section{Methods}
+\label{sec:methods}
+
+\subsection{Multidimensional correlation based tracker}
+
+\subsection{Different visual models}
+
+\subsection{Scale estimation}
+
+\section{Experimental evaluation}
+\label{sec:experimental_evaluation}
 
 \section{Conclusion}
+
+\bibliographystyle{unsrt}
+\bibliography{main}
 
 \end{document}
