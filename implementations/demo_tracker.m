@@ -3,7 +3,7 @@ function demo_tracker()
 % TODO: put name oy four tracker here
 tracker_name = 'my';
 % TODO: select a sequence you want to test on
-sequence = 'sunshade';
+sequence = 'car';
 % TODO: give path to the dataset folder
 dataset_path = './resources/vot/vot2014';
 
@@ -11,11 +11,12 @@ params = struct;
 params.sigma = 2;
 params.peak = 100;
 params.psr = 0.05;
-params.alpha = 0.025;     % learning rate
-params.lambda = 0.01;     % regularization
-params.S = 33;            % # of scales
-params.a = 1.02;          % scale factor
-params.scale = false;     % estimate scale [true|false]
+params.alpha = 0.025;           % learning rate
+params.lambda = 0.01;           % regularization
+params.S = 33;                  % # of scales
+params.a = 1.02;                % scale factor
+params.scale = false;           % estimate scale [true|false]
+params.model_t = 'pcahog';      % feature model used ['gray'|'rgb'|'hsv'|'luv'|'pcahog']
 
 use_reinitialization = true;
 skip_after_fail = 5;
@@ -45,7 +46,7 @@ end
 start_frame = 1;
 n_failures = 0;
 
-figure(1); clf;
+figure(1); clf; colormap(gray);
 frame = 1;
 tic;
 while frame <= numel(img_dir)
@@ -64,29 +65,16 @@ while frame <= numel(img_dir)
     end
     
     % show image
-%     subplot(4, 4, 1:12);
-%     cla;
-    imagesc(rgb2gray(img)); colormap(gray); set(gca,'dataAspectRatio',[1 1 1]);
+    imagesc(rgb2gray(img)); axis image; %set(gca,'dataAspectRatio',[1 1 1]);
     hold on;
-    color = 'y';
-    if tracker.m(end) < params.peak*params.psr
-        color = 'r';
-    end
-    rectangle('Position',bbox, 'LineWidth',2, 'EdgeColor',color);
+    rectangle('Position',bbox, 'LineWidth',2, 'EdgeColor','y');
     % show current number of failures & frame number
-    text(12, 15, sprintf('Failures: %d\nFrame: #%d\nFPS: %d\nPSR: %d', n_failures, frame, round(frame/toc), round(tracker.m(end))), 'Color','w', ...
+    text(3, 15, sprintf('Failures: %d\nFrame: #%d\nFPS: %d', n_failures, frame, round(frame/toc)), 'Color','w', ...
         'FontSize',10, 'FontWeight','normal', ...
         'BackgroundColor','k', 'Margin',1);    
     hold off;
     drawnow;
     
-%     subplot(4, 4, 13:16);
-%     hold on;
-%     cla;
-%     plot(1:(frame-start_frame+1), tracker.m, 'b'); ylim([0 params.peak]);
-%     plot([1 frame-start_frame+1], [params.peak*params.psr params.peak*params.psr], 'r'); ylim([0 params.peak]);
-%     hold off;
-%     drawnow;
     
     % detect failures and reinit
     if use_reinitialization
@@ -104,4 +92,13 @@ while frame <= numel(img_dir)
 end
 
 end  % endfunction
+
+function str = params_to_string(params)
+    str = "PARAMETERS:"+newline;
+    keys = fieldnames(params);
+    for i = 1:numel(keys)
+        value = params.(keys{i});
+        str = str + keys{i} + "=" + value + newline;
+    end
+end
 

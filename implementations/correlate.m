@@ -30,7 +30,7 @@ function [y, A, B] = correlate(f, Gc, A, B, lambda)
         FcF(:,:,l) = Fc .* F;
     end
     
-    y = ifft2(sum(AcF, 3) ./ (B + lambda));  % eq. 6
+    y = real(ifft2(sum(AcF, 3) ./ (B + lambda)));  % eq. 6
     A = GcF;                                 % part of eq. 5a
     B = sum(FcF, 3);                         % part of eq. 5b
 end

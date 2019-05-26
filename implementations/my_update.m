@@ -1,7 +1,7 @@
 function [state, location] = my_update(state, I, params)
         
     %% translation
-    [dx, dy, A_t, B_t] = estimate_translation(I, state, params);
+    [dx, dy, A_t, B_t, y, peak] = estimate_translation(I, state, params);
       
     %% scale
     if params.scale
@@ -23,6 +23,8 @@ function [state, location] = my_update(state, I, params)
     state.bbox_t = scale_bbox([state.bbox_t(1:2)+[dx dy] state.bbox_t(3:4)], ds);
 
     state.scale = state.scale * ds;
+    state.peaks = [state.peaks peak];
+    state.y = y;
     
     % location
     location = state.bbox_s;
@@ -37,17 +39,23 @@ function bbox = scale_bbox(bbox, scale)
     bbox(1:2) = [x_c y_c]-bbox(3:4)/2;
 end
 
-function [dx, dy, A, B] = estimate_translation(I, state, params)
+function [dx, dy, A, B, y, peak] = estimate_translation(I, state, params)
     % prev object center
     x_c = state.bbox_t(1)+state.bbox_t(3)/2;
     y_c = state.bbox_t(2)+state.bbox_t(4)/2;
 
     % correlate
-    [f, ~] = extract_translation_features(I, state.bbox_t, state.Cw_t, params);
+    [f, ~] = extract_translation_features(I, state.bbox_t, state.Cw_t, params.model_t);
     [y, A, B] = correlate(f, state.Gc_t, state.A_t, state.B_t, params.lambda);
     
     % get next center
-    [~, mi] = max(y(:));
+    [peak, mi] = max(y(:));
+    
+%     [peaks, locs] = findpeaks(y(:));
+%     [~, mi] = sort(peaks, 'descend');
+%     peak = peaks(mi(2));
+%     mi = locs(mi(2));
+    
     [y_n, x_n] = ind2sub(size(y), mi);
     x_n = x_n + state.bbox_t(1);
     y_n = y_n + state.bbox_t(2);
