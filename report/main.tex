@@ -20,7 +20,7 @@
 \maketitle
 %
 \begin{abstract}
-TODO
+In this work we review some of the approaches that were used to upgrade MOSSE tracker. Specifically we review and implement multidimensional correlation filter. Review effect of the different visual models and research area around scale estimation.
 \end{abstract}
 \keywords{Correlation filter based tracking, color spaces, translation estimation, scale estimation}
 
@@ -72,15 +72,14 @@ PCA-HOG is essentially dimensional reduced projection of the Histogram of Orient
 
 Next we worked on scale estimation \footnote{Our implementation can be found in \href{https://github.com/matjazmav/fri-1819-nmrv-seminar/blob/master/implementations/\-extract_scale_features.m}{\textit{implementations/extract\_scale\_features.m}}.}. We followed steps presented by Danelljan et al. \cite{danelljan2014accurate}. In their paper they propose generic method that can be embed into any tracker. They propose that translation and scale estimation should use separate correlation filters with separate features. First we need to estimate the translation and second the scale. 
 
-We invested lot of work in the scale estimation, but unfortunately we ware unable to successfully implement it. With the scale estimation enabled, our tracker randomly drift off the target. Here we helped with the following papers: \cite{danelljan2014accurate,chen2015experimental,zhang2018visual}.
+We invested lot of work in the scale estimation, but unfortunately we were unable to successfully implement it. With the scale estimation enabled, our tracker randomly drift off the target. Here we helped with the following papers: \cite{danelljan2014accurate,chen2015experimental,zhang2018visual}.
 
-\newpage
 \section{Experimental evaluation}
 \label{sec:experimental_evaluation}
 
 In our evaluation we first set the parameters like described by Danelljan et al. \cite{danelljan2014accurate} ($\alpha=0.025$ and $\lambda=0.01$ with PCA-HOG features). Later we test each parameter individually, we found that our tracker performs better with the $\alpha$ parameter set to $0.019$. We also tested how tracker perform using different visual models. We expected that PCA-HOG would outperform others, but it looks like that HSV color space give us most accurate and robust estimations. Effects of this two parameters are illustrated in the figure \ref{fig:parameters}. Note that in our evaluation we disabled scale estimation.
 
-\begin{figure}[H]
+\begin{figure}
     \centering
 
     \begin{subfigure}{0.48\textwidth}
@@ -103,8 +102,16 @@ In our evaluation we first set the parameters like described by Danelljan et al.
     \label{fig:parameters}
 \end{figure}
 
+Later we compared our tracker with the best set of parameters against the MOSSE tracker that we implemented before. From table \ref{tbl:my_vs_mosse} we can observe that overall our tracker outperformed MOSSE in terms of accuracy and robustness. However our tracker is about 5 times slower but still can perform in real-time.
 
+\input{results/my_vs_mosse_analysis.tex}
+
+\newpage
 \section{Conclusion}
+
+In our work we familiarized our selfs with a few different color spaces, we implemented multidimensional CF tracker and tried to implement separate CF for the scale estimation. We invested a lot of research in the scale estimation, unfortunately we couldn't find good explanation of it, therefore our implementation was unsuccessful.
+
+We also found many interesting research papers related to the CF tracker, even in the 2019, different CF trackers are still researched and improved. We also found that there are many more color spaces that can be researched, also different color spaces can be combined together.
 
 \bibliographystyle{unsrt}
 \bibliography{main}
