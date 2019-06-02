@@ -10,7 +10,6 @@ dataset_path = './resources/vot/vot2014';
 params = struct;
 params.sigma = 2;
 params.peak = 100;
-params.psr = 0.05;
 params.alpha = 0.025;           % learning rate
 params.lambda = 0.01;           % regularization
 params.S = 33;                  % # of scales

@@ -12,7 +12,7 @@ function [f, d] = extract_scale_features(I, bbox, Cw, params)
         patch = imresize(get_patch(I, [x_c y_c], scales(s), bbox(3:4)), [P R]);
         f_hog = fhog(patch,4);
         f_pca = pca(f_hog(:,:,1:31));
-        f_pca = f_pca(:,1:19);
+        f_pca = f_pca(:,1:11);
         
         if s == 1
            f = zeros(params.S, numel(f_pca(:)));

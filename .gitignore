@@ -347,8 +347,10 @@ octave-workspace
 
 # End of https://www.gitignore.io/api/git,latex,matlab,octave,visualstudiocode
 
-workspace/*
-!workspace/templates/**
-!workspace/tests.m
-!workspace/time_analysis.m
+workspace/results/*
+workspace/*_initialize.m
+workspace/*_update.m
+workspace/workspace_config.m
+
 resources/*
+!resources/**/README.md

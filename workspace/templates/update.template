@@ -1,0 +1,18 @@
+function [state, location] = {{name}}_update(state, I)
+
+    params = struct;
+    params.sigma = 2;
+    params.peak = 100;
+    params.alpha = {{alpha}};       % learning rate
+    params.lambda = 0.01;           % regularization
+    params.model_t = '{{model_t}}';   % feature model used ['gray'|'rgb'|'hsv'|'luv'|'pcahog']
+    
+    % scaling doesnt work - this are not used
+    params.S = 33;                  % # of scales
+    params.a = 1.02;                % scale factor
+    params.scale = false;           % estimate scale [true|false]
+    
+    [state, location] = my_update(state, I, params);
+
+end
+

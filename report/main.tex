@@ -8,42 +8,101 @@
 \usepackage{siunitx}
 \usepackage{csvsimple}
 \usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{float}
 % 
 \begin{document}
 % 
-\title{Seminar: Correlation Filter Tracking - Upgrades}
+\title{Multidimensional Correlation Filter Tracker \& Scale Estimation}
 \author{Matjaž Mav}
 \institute{University of Ljubljana, Faculty of Computer and Information Science\newline\email{mm3058@student.uni-lj.si}}
 %
 \maketitle
 %
- 
 \begin{abstract}
 TODO
 \end{abstract}
-\keywords{TODO, TO, DO}
+\keywords{Correlation filter based tracking, color spaces, translation estimation, scale estimation}
 
 \section{Introduction}
 In this seminar we choose to work on upgrading previously implemented tracker based on correlation filter (CF) called MOSSE. We choose this topic because we found it interesting that simple approach like correlation filter can achieve beyond real-time performance with relatively good accuracy and robustness. In this paper we will explore effect of a different visual models and approaches for the target scale estimation.
 
 This paper is structured in to three sections. In the section \ref{sec:related_work} we will analyse work previously done in this area. In the section \ref{sec:methods} we will explain our approach and methods that we used. And in the section \ref{sec:experimental_evaluation} we will present results of our implementation.
 
+Our MATLAB code is available on the GitHub repository \href{https://github.com/matjazmav/fri-1819-nmrv-seminar}{\textit{matjazmav/fri-1819-nmrv-seminar}}.
+
 \section{Related work}
 \label{sec:related_work}
 Tracking with CF is interesting topic, because of its high computational efficiency, robustness and accuracy. Thereby this trackers are suitable for variety of applications. In 2010 Bolme et al. \cite{bolme2010visual} introduced fast CF tracker called MOSSE filter (Minimum Output Sum of Squared Error) that can achieve few hundreds frames per second (in their evaluation around ~650 FPS).  In 2014 Danelljan et al. \cite{danelljan2014accurate} proposed method that uses separate filters for translation and scale estimation. Their approach is generic and can be integrated in any existing object tracker. Additionally they presented CF that can operate on multidimensional features. Our paper is essentially based on this two papers.
 
+In 2014 Danelljan et al. \cite{danelljan2014adaptive} review effects of the different color spaces for a tracker based on the CSK tracker. They get best results with the color feature that combines intensity map and the color names (CN).
+
+Later in 2019 Fu et al. \cite{fu2019correlation} research CF tracker for UAV applications. They combine multiple features like fHOG, color names (CN), intensity and saliency and fuse response maps with a PSR-based weighting. 
 
 \section{Methods}
 \label{sec:methods}
 
 \subsection{Multidimensional correlation based tracker}
 
-\subsection{Different visual models}
+First we implemented multidimensional correlation based tracker witch is closely related to the MOSSE tracker \footnote{Our implementation can be found in \href{https://github.com/matjazmav/fri-1819-nmrv-seminar/blob/master/implementations/correlate.m}{\textit{implementations/\-correlate.m}}.}. We followed instructions presented by the Danelljan et al. \cite{danelljan2014accurate}. Here are the relevant equations used in our $d$-dimensional correlation filter.
 
-\subsection{Scale estimation}
+\begin{align}
+\begin{split}
+A_t^l &= (1 - \alpha) A_{t-1}^l + \alpha \overline{G} F_t^l
+\label{eq:1}
+\end{split}\\
+\begin{split}
+B_t &= (1 - \alpha) A_{t-1}^l + \alpha \sum_{k=1}^d \overline{F_t^k} F_t^k
+\label{eq:2}
+\end{split}\\
+\begin{split}
+y &= \mathcal{F}^{-1} \{ \frac{\sum_{l=1}^d \overline{A^l} F^l}{B + \lambda} \}
+\label{eq:3}
+\end{split}
+\end{align}
 
+Here capital letters denote the discrete Fourier transform of the corresponding function and the bar over capital letter denote its complex conjugation. $\alpha$ is a learning rate parameter and the $\lambda$ is the regularization parameter. Inverse discrete Fourier transform is denoted as $\mathcal{F}^{-1}$. All of the products and divisions are point-wise. Where the $g$ is the Gaussian peak located in the center of the target. And $f^l$ is the $d$-dimensional feature map. We denote feature dimension number by $l \in \{1,...,d\}$. Equation \ref{eq:1} is used to update numerator $A_t^l$ and equation \ref{eq:2} is used to update denominator $B_t$ at the timestamp $t$. Equation \ref{eq:3} is used to estimate new target state by finding position of the maximal value in the score $y$.
+
+\subsection{Different visual models for target translation estimation}
+After we implemented multidimensional correlation based tracker, we tried to extract different visual models for the target translation estimation \footnote{Our implementation can be found in \href{https://github.com/matjazmav/fri-1819-nmrv-seminar/blob/master/implementations/extract_translation_features.m}{\textit{implementations/\-extract\_translation\_features.m}}.}. Danelljan et al. \cite{danelljan2014accurate} used PCA-HOG feature. Additionally we used different color spaces like gray, RGB, HSV, and LUV.
+
+PCA-HOG is essentially dimensional reduced projection of the Histogram of Oriented Gradients. This feature is extracted with the Piotr's Computer Vision Matlab Toolbox \cite{PMT}. To extract PCA-HOG feature for the translation estimation, we first need to normalize gray image between values $-\frac{1}{2}$ and $\frac{1}{2}$. Then we extract fHOG feature using \textit{fhog} function over spatial size of 1. fHOG feature is then projected using the \textit{pca} function. The final feature is composed of the gray image patch and the top 11 eigenvectors. Felzenszwal et al. \cite{felzenszwalb2009object} showed that top 11 eigenvectors essentially captures all of the information in the HOG feature. 
+
+\subsection{Target scale estimation}
+
+Next we worked on scale estimation \footnote{Our implementation can be found in \href{https://github.com/matjazmav/fri-1819-nmrv-seminar/blob/master/implementations/\-extract_scale_features.m}{\textit{implementations/extract\_scale\_features.m}}.}. We followed steps presented by Danelljan et al. \cite{danelljan2014accurate}. In their paper they propose generic method that can be embed into any tracker. They propose that translation and scale estimation should use separate correlation filters with separate features. First we need to estimate the translation and second the scale. 
+
+We invested lot of work in the scale estimation, but unfortunately we ware unable to successfully implement it. With the scale estimation enabled, our tracker randomly drift off the target. Here we helped with the following papers: \cite{danelljan2014accurate,chen2015experimental,zhang2018visual}.
+
+\newpage
 \section{Experimental evaluation}
 \label{sec:experimental_evaluation}
+
+In our evaluation we first set the parameters like described by Danelljan et al. \cite{danelljan2014accurate} ($\alpha=0.025$ and $\lambda=0.01$ with PCA-HOG features). Later we test each parameter individually, we found that our tracker performs better with the $\alpha$ parameter set to $0.019$. We also tested how tracker perform using different visual models. We expected that PCA-HOG would outperform others, but it looks like that HSV color space give us most accurate and robust estimations. Effects of this two parameters are illustrated in the figure \ref{fig:parameters}. Note that in our evaluation we disabled scale estimation.
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[trim=40 90 70 82,clip,width=\linewidth]{results/testing_alpha.png}
+        \caption{Comparing parameter $\alpha$}
+    \end{subfigure}
+    \hspace*{\fill}
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[trim=40 90 70 82,clip,width=\linewidth]{results/testing_models.png}
+        \caption{Comparing visual models}
+    \end{subfigure}
+    
+    \caption{Comparison of the different parameters and its effects on the accuracy and robustness.
+    \newline
+    \newline
+    The legend is represented with the following notation: \newline
+    \textit{my\textunderscore\textless $\alpha$ parameter\textgreater\textunderscore\textless visual model\textgreater}, where the first digit is whole number and all the rest are decimals.}
+    \label{fig:parameters}
+\end{figure}
+
 
 \section{Conclusion}
 
